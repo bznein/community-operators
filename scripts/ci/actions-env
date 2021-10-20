@@ -99,6 +99,7 @@ if [ -n "$OP_TEST_REMOVED_FILES" ];then
     # Check if .github/ dir is modified
     [[ $sf == .github* ]] && OP_TEST_CHANGES_GITHUB=1 && continue
     [[ $sf == scripts* ]] && OP_TEST_CHANGES_CI=1 && continue
+    [[ $sf == ci* ]] && OP_TEST_CHANGES_CI=1 && continue
     [[ $sf == docs* ]] && OP_TEST_CHANGES_DOCS=1 && continue
     [[ $sf == *Dockerfile* ]] && OP_TEST_CHANGES_DOCKERFILE=1 && continue
     [[ $sf == community-operators* ]] && OP_TEST_CHANGES_STREAM_COMMUNITY=1
@@ -181,6 +182,7 @@ for sf in ${OP_TEST_ADDED_MODIFIED_FILES}; do
   # Check if .github/ dir is modified
   [[ $sf == .github* ]] && OP_TEST_CHANGES_GITHUB=1 && continue
   [[ $sf == scripts* ]] && OP_TEST_CHANGES_CI=1 && continue
+  [[ $sf == ci* ]] && OP_TEST_CHANGES_CI=1 && continue
   [[ $sf == docs* ]] && OP_TEST_CHANGES_DOCS=1 && continue
   [[ $sf == *Dockerfile* ]] && OP_TEST_CHANGES_DOCKERFILE=1 && continue
   [[ $sf == community-operators* ]] && OP_TEST_CHANGES_STREAM_COMMUNITY=1
@@ -317,8 +319,8 @@ if [ -f $CI_YAML_REMOTE_LOCAL ];then
     TEST_REVIEWERS=$(cat  $CI_YAML_REMOTE_LOCAL | yq '.reviewers')
     for row in $(echo "${TEST_REVIEWERS}" | yq -r '.[]'); do
       echo "checking if reviewer '$row' is pr author '$OP_TEST_PR_AUTHOR' ..."
-      if [ "$OP_TEST_PR_AUTHOR" == "$row" ];then
-        echo "[AUTHORIZED_CHANGES=1] : Author '$OP_TEST_PR_AUTHOR' is in reviewer list" && OP_TEST_AUTHORIZED_CHANGES=1
+      if [ "${OP_TEST_PR_AUTHOR,,}" == "${row,,}" ];then
+        echo "[AUTHORIZED_CHANGES=1] : Author '${OP_TEST_PR_AUTHOR,,}' is in reviewer list" && OP_TEST_AUTHORIZED_CHANGES=1
       else
         OP_TEST_REVIEVERS="@$row,$OP_TEST_REVIEVERS"
       fi
